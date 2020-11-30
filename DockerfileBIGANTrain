@@ -11,4 +11,4 @@ RUN python3 -m pip install sklearn
 RUN python3 -m pip install pillow
 
 # Execute the program
-CMD python3 BIGANTraining32x32.py Dataset32x32/normalTraining/ > E100_BIGAN/training.txt
+CMD python3 BIGANTraining.py Dataset32x32/normalTraining/
