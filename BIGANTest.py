@@ -85,7 +85,7 @@ with open('Image.txt', 'r') as filehandle:
         img = kimage.load_img(img_dir + name)
         print( name )
         x = np.array( img )
-        x = x.reshape( 1, 64, 64, 3).astype('float32')
+        x = x.reshape( 1, PATCH_SIZE, PATCH_SIZE, 3).astype('float32')
         x = (x - 127.5) / 127.5
 
         Ex = e_model.predict( x )
