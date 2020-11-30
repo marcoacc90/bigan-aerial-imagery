@@ -102,6 +102,7 @@ with open('Image.txt', 'r') as filehandle:
         else:
             train_images = np.copy( x )
             flag = True
+        print( train_images.shape )
 os.system('rm -r Image.txt')
 print('Patches are ready, shape: {}'.format(train_images.shape))
 train_images = train_images.astype('float32')
