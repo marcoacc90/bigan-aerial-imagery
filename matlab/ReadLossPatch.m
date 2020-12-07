@@ -3,16 +3,16 @@ clc
 close all
 
 %%%% SELECT
-EPOCHS = 210;
-MODEL = 'E1000_BIGAN';
+MODEL = 'E500BIGAN';
 mode = 'Test';
+dataset = 'dataset3'
 bin = 50;
-metric = 2; %1,2
+metric = 1; %1,2
 
-path = sprintf('./../E%d_Results', EPOCHS );
-name = sprintf('%s/%s_loss_anomaly_%s.txt',path,MODEL,mode);
+path = './../E500Result';
+name = sprintf('%s/%s_novel_%s_%s.txt',path,MODEL,mode,dataset);
 novel = load(name);
-name = sprintf('%s/%s_loss_normal_%s.txt',path,MODEL,mode);
+name = sprintf('%s/%s_normal_%s_%s.txt',path,MODEL,mode,dataset);
 normal = load(name);
 
 histogram(normal(:,metric),bin)
