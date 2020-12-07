@@ -2,22 +2,14 @@ FROM tensorflow/tensorflow:latest-gpu-py3
 
 
 #Copy the file in the host machine to the container
-COPY Dataset32x32/anomalyTest/ Dataset32x32/anomalyTest/
+COPY Dataset3/normalTest/ Dataset3/normalTest/
 COPY Modules/ Modules/
+COPY E500_BIGAN/ E500_BIGAN/
 COPY BIGANTest.py BIGANTest.py
-
-COPY E100_BIGAN/generator_weights_100.index   E100_BIGAN/generator_weights_100.index
-COPY E100_BIGAN/generator_weights_100.data-00000-of-00001 E100_BIGAN/generator_weights_100.data-00000-of-00001
-
-COPY E100_BIGAN/encoder_weights_100.index   E100_BIGAN/encoder_weights_100.index
-COPY E100_BIGAN/encoder_weights_100.data-00000-of-00001 E100_BIGAN/encoder_weights_100.data-00000-of-00001
-
-COPY E100_BIGAN/discriminator_weights_100.index   E100_BIGAN/discriminator_weights_100.index
-COPY E100_BIGAN/discriminator_weights_100.data-00000-of-00001 E100_BIGAN/discriminator_weights_100.data-00000-of-00001
 
 RUN python3 -m pip install matplotlib
 RUN python3 -m pip install sklearn
 RUN python3 -m pip install pillow
 
 # Execute the program
-CMD python3 BIGANTest.py
+CMD python3 BIGANTest.py 500 Dataset3/normalTest/ E500_BIGAN/ E500Result/ E500BIGAN_normal_test.txt

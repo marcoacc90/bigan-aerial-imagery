@@ -14,10 +14,10 @@ import sys
 
 def summarize_performance( path, epoch, g_model, e_model, d_model, images, latent_dim, n_samples=100 ) :
     xReal, yReal = TO.generateRealSamples( images, n_samples )
-    #_, accReal = d_model.evaluate( xReal, yReal, verbose=0 )
-    #xFake, yFake = TO.generateFakeSamplesNormal( g_model, n_samples, latent_dim )
-    #_, accFake = d_model.evaluate(xFake, yFake, verbose=0 )
-    #print('>Accuracy real: %.0f%%, fake: %.0f%%' % (accReal*100, accFake*100))
+    E_x = e_model.predict( xReal )
+    G_Ex = g_model.predict( E_x )
+    z = tf.random.normal([n_samples, latent_dim], mean = 0.0, stddev = 1.0)
+    G_z = g_model.predict( z )
 
     #Real images
     filename = '%s/plot_real_e%03d.png' % ( path, epoch+1 )
@@ -25,15 +25,11 @@ def summarize_performance( path, epoch, g_model, e_model, d_model, images, laten
     TO.savePlot( filename, X )
 
     # Reconstructed images
-    E_x = e_model.predict( xReal )
-    G_Ex = g_model.predict( E_x )
     filename = '%s/plot_recon_e%03d.png' % ( path, epoch+1 )
     X = TO.conver2image( G_Ex )
     TO.savePlot( filename, X )
 
     # Generated images
-    z = tf.random.normal([n_samples, latent_dim], mean = 0.0, stddev = 1.0)
-    G_z = g_model.predict( z )
     filename = '%s/plot_gen_e%03d.png' % ( path, epoch+1 )
     X = TO.conver2image( G_z )
     TO.savePlot( filename, X )
@@ -58,7 +54,7 @@ def train_step( g_model, e_model, d_model, g_opt, e_opt, d_opt, x, latent_dim ):
         label_gen = d_model( {"img_input": G_z,"z_input": z  }, training = True)
 
         gen_loss = MO.generator_loss( label_gen )
-        enc_loss = MO.encoder_loss( label_enc )                     #Tambien el encoder busca engañar,
+        enc_loss = MO.encoder_loss( label_enc )
         disc_loss = MO.discriminator_loss( label_enc, label_gen )
 
     gradients_of_generator = gen_tape.gradient(gen_loss, g_model.trainable_variables)
@@ -77,13 +73,13 @@ def train( path, g_model, e_model, d_model, g_opt, e_opt, d_opt, dataset, train_
       train_step( g_model, e_model, d_model, g_opt, e_opt, d_opt, image_batch, latent_dim )
     print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
 
-    if (epoch + 1) % 10 == 0:
+    if (epoch + 1) % 50 == 0:
         summarize_performance( path, epoch, g_model, e_model, d_model, train_images, latent_dim )
 
 # LOAD DATA FOR TRAINING
 if len(sys.argv) != 2:
     print('python3 training.py <img_dir> \n')
-    print('python3 BIGANTraining.py Dataset32x32/normalTraining/');
+    print('python3 BIGANTraining.py Dataset/normalTraining/');
     sys.exit( 1 )
 
 # LOAD THE PATCHES
@@ -103,11 +99,11 @@ with open('Image.txt', 'r') as filehandle:
             train_images = np.copy( x )
             flag = True
         print( train_images.shape )
+
 os.system('rm -r Image.txt')
 print('Patches are ready, shape: {}'.format(train_images.shape))
 train_images = train_images.astype('float32')
 train_images = (train_images - 127.5) / 127.5   # Normalize the images to [-1, 1]
-
 BUFFER_SIZE = len(train_images)
 BATCH_SIZE = GO.BATCH_SIZE
 latent_dim = GO.NOISE_DIM
@@ -121,12 +117,13 @@ cmd = 'mkdir ' + path
 os.system( cmd )
 
 # CREATE THE MODELS AND OPTIMIZERS
-e_model = MO.make_encoder_model( latent_dim )
-g_model = MO.make_generator_model( latent_dim )
-d_model = MO.make_discriminator_model( image_dim )
-e_opt = tf.keras.optimizers.Adam( 1e-5, beta_1=0.5 )
-g_opt = tf.keras.optimizers.Adam( 1e-5, beta_1=0.5 )
-d_opt = tf.keras.optimizers.Adam( 1e-5, beta_1=0.5 )
+e_model = MO.make_encoder_model_example( image_dim, latent_dim )
+g_model = MO.make_generator_model_example( latent_dim )
+d_model = MO.make_discriminator_model_example( image_dim, latent_dim )
+e_opt = tf.keras.optimizers.Adam( 1e-4 )
+g_opt = tf.keras.optimizers.Adam( 1e-4 )
+d_opt = tf.keras.optimizers.Adam( 1e-4 )
+
 
 # START THE TRAINING
 train( path, g_model, e_model, d_model, g_opt, e_opt, d_opt, dataset, train_images, EPOCHS, latent_dim )

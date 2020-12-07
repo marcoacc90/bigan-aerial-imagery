@@ -1,1 +1,0 @@
-Patches are ready, shape: (25600, 32, 32, 3)

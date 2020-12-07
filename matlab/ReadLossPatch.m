@@ -3,10 +3,11 @@ clc
 close all
 
 %%%% SELECT
-EPOCHS = 500;
-MODEL = 'IZI'; % IZIf, IZI, ZIZ
-mode = 'Test';  % Test, Validation
+EPOCHS = 210;
+MODEL = 'E1000_BIGAN';
+mode = 'Test';
 bin = 50;
+metric = 2; %1,2
 
 path = sprintf('./../E%d_Results', EPOCHS );
 name = sprintf('%s/%s_loss_anomaly_%s.txt',path,MODEL,mode);
@@ -14,9 +15,9 @@ novel = load(name);
 name = sprintf('%s/%s_loss_normal_%s.txt',path,MODEL,mode);
 normal = load(name);
 
-histogram(normal(:),bin)
+histogram(normal(:,metric),bin)
 hold on
-histogram(novel(:),bin)
+histogram(novel(:,metric),bin)
 
 %title(mode)
 xlabel('Anomaly Score')
