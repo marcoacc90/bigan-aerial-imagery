@@ -26,11 +26,11 @@ oname = str( sys.argv[ 5 ] )
 alpha = 0.9
 
 # LOAD MODELS
-e_model = MO.make_encoder_model_example( GO.IMAGE_DIM, GO.NOISE_DIM )
+e_model = MO.make_encoder_model( GO.IMAGE_DIM, GO.NOISE_DIM )
 e_model.load_weights(  biganfolder + 'encoder_weights_' + modelid )
-g_model = MO.make_generator_model_example( GO.NOISE_DIM )
+g_model = MO.make_generator_model( GO.NOISE_DIM )
 g_model.load_weights( biganfolder + 'generator_weights_' + modelid )
-d_model = MO.make_discriminator_model_example( GO.IMAGE_DIM, GO.NOISE_DIM )
+d_model = MO.make_discriminator_model( GO.IMAGE_DIM, GO.NOISE_DIM )
 d_model.load_weights( biganfolder + 'discriminator_weights_' + modelid )
 d_features = tf.keras.Model( d_model.inputs, d_model.get_layer('dropout4').output )
 
