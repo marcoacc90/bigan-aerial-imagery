@@ -5,7 +5,7 @@ FROM tensorflow/tensorflow:latest-gpu-py3
 #COPY Dataset3/normalTest/ Dataset3/normalTest/
 COPY Dataset3/novelTest/ Dataset3/novelTest/
 COPY Modules/ Modules/
-COPY E500_BIGAN/ E500_BIGAN/
+COPY E10000_BIGAN/ E10000_BIGAN/
 COPY BIGANTest.py BIGANTest.py
 
 RUN python3 -m pip install matplotlib
@@ -13,5 +13,5 @@ RUN python3 -m pip install sklearn
 RUN python3 -m pip install pillow
 
 # Execute the program
-#CMD python3 BIGANTest.py 500 Dataset3/normalTest/ E500_BIGAN/ E500Result/ E500BIGAN_normal_test.txt
-CMD python3 BIGANTest.py 500 Dataset3/novelTest/ E500_BIGAN/ E500Result/ E500BIGAN_novel_test.txt
+#CMD python3 BIGANTest.py 10000 Dataset3/normalTest/ E10000_BIGAN/ E10000Result/ E10000BIGAN_normal_test.txt
+CMD python3 BIGANTest.py 10000 Dataset3/novelTest/ E10000_BIGAN/ E10000Result/ E10000BIGAN_novel_test.txt

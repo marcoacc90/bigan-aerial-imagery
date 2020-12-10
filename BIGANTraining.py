@@ -73,7 +73,7 @@ def train( path, g_model, e_model, d_model, g_opt, e_opt, d_opt, dataset, train_
       train_step( g_model, e_model, d_model, g_opt, e_opt, d_opt, image_batch, latent_dim )
     print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
 
-    if (epoch + 1) % 50 == 0:
+    if (epoch + 1) % 100 == 0:
         summarize_performance( path, epoch, g_model, e_model, d_model, train_images, latent_dim )
 
 # LOAD DATA FOR TRAINING
