@@ -2,16 +2,15 @@
 clc
 
 %%%% SELECT
-EPOCHS = 500;
-MODEL = 'E500BIGAN';
+MODEL = 'E500BIGAN'; %E10000BIGAN
 dataset = 'dataset3';
-metric = 2;
+metric = 1;
 
 % DO NOT CHANGE
 mode = 'Test';
 
 n_thresholds = 10000;
-path = sprintf('./../E%dResult', EPOCHS );
+path = './../Result';
 
 
 name = sprintf('%s/%s_novel_%s_%s.txt',path,MODEL,mode,dataset);
@@ -34,7 +33,7 @@ ylabel('False positive rate ')
 set(gca,'FontSize',18)
 auc = abs(trapz(fp/n,tp/p))
 plot([0 1],[0 1],'color',[0.5 0.5 0.5])
-cmd  = sprintf('izi_f(AUC=%0.4f)',auc)
+cmd  = sprintf('BIGAN(AUC=%0.4f)',auc)
 legend(cmd)
 
 
