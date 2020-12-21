@@ -5,12 +5,14 @@ import numpy as np
 from tensorflow.keras import layers
 from tensorflow.keras.models import Model
 
-def make_generator_model(latent_dim):
+def make_generator_model(my_shape, latent_dim):
     model = tf.keras.Sequential()
-    model.add(layers.Dense(7*7*256, use_bias=False, input_dim = latent_dim ))
+    path_w, path_h, channel = my_shape
+    ksize = path_w // 4
+    model.add(layers.Dense( ksize * ksize * 256, use_bias=False, input_dim = latent_dim ))
     model.add(layers.BatchNormalization())
     model.add(layers.LeakyReLU())
-    model.add(layers.Reshape((7, 7, 256)))
+    model.add(layers.Reshape((ksize, ksize, 256)))
     model.add(layers.Conv2DTranspose(128, (5, 5), strides=(1, 1), padding='same', use_bias=False))
     model.add(layers.BatchNormalization())
     model.add(layers.LeakyReLU())

@@ -2,7 +2,7 @@ FROM tensorflow/tensorflow:latest-gpu-py3
 
 
 #Copy the file in the host machine to the container
-COPY Dataset3/normalTraining/ Dataset3/normalTraining/
+COPY Dataset1/normalTraining32/ Dataset1/normalTraining32/
 COPY Modules/ Modules/
 COPY BIGANTraining.py BIGANTraining.py
 
@@ -11,4 +11,4 @@ RUN python3 -m pip install sklearn
 RUN python3 -m pip install pillow
 
 # Execute the program
-CMD python3 BIGANTraining.py Dataset3/normalTraining/
+CMD python3 BIGANTraining.py Dataset2/normalTraining32/ >  E500_BIGAN/training.txt

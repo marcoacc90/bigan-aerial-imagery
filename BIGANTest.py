@@ -28,7 +28,7 @@ alpha = 0.9
 # LOAD MODELS
 e_model = MO.make_encoder_model( GO.IMAGE_DIM, GO.NOISE_DIM )
 e_model.load_weights(  biganfolder + 'encoder_weights_' + modelid )
-g_model = MO.make_generator_model( GO.NOISE_DIM )
+g_model = MO.make_generator_model(GO.IMAGE_DIM, GO.NOISE_DIM )
 g_model.load_weights( biganfolder + 'generator_weights_' + modelid )
 d_model = MO.make_discriminator_model( GO.IMAGE_DIM, GO.NOISE_DIM )
 d_model.load_weights( biganfolder + 'discriminator_weights_' + modelid )

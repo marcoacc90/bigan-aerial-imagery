@@ -118,7 +118,7 @@ os.system( cmd )
 
 # CREATE THE MODELS AND OPTIMIZERS
 e_model = MO.make_encoder_model( image_dim, latent_dim )
-g_model = MO.make_generator_model( latent_dim )
+g_model = MO.make_generator_model( image_dim, latent_dim )
 d_model = MO.make_discriminator_model( image_dim, latent_dim )
 e_opt = tf.keras.optimizers.Adam( 1e-4 )
 g_opt = tf.keras.optimizers.Adam( 1e-4 )
