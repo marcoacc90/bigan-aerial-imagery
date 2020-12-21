@@ -8,6 +8,7 @@ import Modules.Tools as TO
 import Modules.Global as GO
 import os
 import sys
+import time
 
 PATCH_SIZE = GO.PATCH_SIZE
 latent_dim = GO.NOISE_DIM
@@ -47,19 +48,33 @@ with open('Image.txt', 'r') as filehandle:
         x = x.reshape( 1, PATCH_SIZE, PATCH_SIZE, 3).astype('float32')
         x = (x - 127.5) / 127.5
 
+        start_time = time.time()
         Ex = e_model.predict( x )
         GEx = g_model.predict( Ex )
+        end_time = time.time()
+        
+        time_part1 = end_time - start_time
+
+
+        start_time = time.time()
         LG = tf.norm( x[0,:,:,:] - GEx[0,:,:,:], ord = 1)
         label = d_model.predict( {"img_input": x,  "z_input": Ex} )
         LD1 = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(labels=tf.ones_like(label),logits=label))
         Ax1 = alpha * LG + (1.0 - alpha) * LD1
+        end_time = time.time()
 
+        time_ax1 = time_part1 + (end_time - start_time)
+
+        start_time = time.time()
         fd1 = d_features.predict( {"img_input": x,  "z_input": Ex} )
         fd2 = d_features.predict( {"img_input": GEx,  "z_input": Ex} )
         LD2 = tf.norm( fd1 - fd2, ord = 1 )
         Ax2 = alpha * LG + (1.0 - alpha) * LD2
+        end_time = time.time()
 
-        f.write( '%f %f' % ( Ax1.numpy() , Ax2.numpy() ) )
+        time_ax2 = time_part1 + (end_time - start_time)
+
+        f.write( '%f %f %f %f' % ( Ax1.numpy() , Ax2.numpy(), time_ax1, time_ax2) )
         f.write( '\n' )
 os.system('rm -r Image.txt')
 f.close()
