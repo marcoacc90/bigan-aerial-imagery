@@ -77,14 +77,17 @@ def train( path, g_model, e_model, d_model, g_opt, e_opt, d_opt, dataset, train_
         summarize_performance( path, epoch, g_model, e_model, d_model, train_images, latent_dim )
 
 # LOAD DATA FOR TRAINING
-if len(sys.argv) != 2:
-    print('python3 training.py <img_dir> \n')
-    print('python3 BIGANTraining.py Dataset/normalTraining/');
+if len(sys.argv) != 3:
+    print('python3 BIGANTraining.py <img_dir> <bigan_dir>\n')
+    print('python3 BIGANTraining.py Dataset/normalTraining/ BIGAN_OUTPUT');
     sys.exit( 1 )
 
 # LOAD THE PATCHES
 PATCH_SIZE = GO.PATCH_SIZE
+
 img_dir = str( sys.argv[ 1 ] )
+bigan_dir = str( sys.argv[ 2 ] )
+
 os.system('ls ' + img_dir + ' > Image.txt')
 flag = False
 with open('Image.txt', 'r') as filehandle:
@@ -104,17 +107,20 @@ os.system('rm -r Image.txt')
 print('Patches are ready, shape: {}'.format(train_images.shape))
 train_images = train_images.astype('float32')
 train_images = (train_images - 127.5) / 127.5   # Normalize the images to [-1, 1]
+
 BUFFER_SIZE = len(train_images)
 BATCH_SIZE = GO.BATCH_SIZE
 latent_dim = GO.NOISE_DIM
 EPOCHS = GO.N_EPOCHS
 image_dim = GO.IMAGE_DIM
+
 dataset = tf.data.Dataset.from_tensor_slices(train_images).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 
 # NAME OF THE OUTPUT PATH
-path = 'E' + str(EPOCHS) +'_BIGAN'
-cmd = 'mkdir ' + path
-os.system( cmd )
+os.system( 'mkdir ' + bigan_dir )
+
+print( 'Noise dim: ', noise_dim )
+print( 'Image size:  ', image_dim )
 
 # CREATE THE MODELS AND OPTIMIZERS
 e_model = MO.make_encoder_model( image_dim, latent_dim )
@@ -126,4 +132,4 @@ d_opt = tf.keras.optimizers.Adam( 1e-4 )
 
 
 # START THE TRAINING
-train( path, g_model, e_model, d_model, g_opt, e_opt, d_opt, dataset, train_images, EPOCHS, latent_dim )
+train( bigan_dir, g_model, e_model, d_model, g_opt, e_opt, d_opt, dataset, train_images, EPOCHS, latent_dim )
